@@ -11,10 +11,17 @@ function combine_files {
 		for f in $studentFolder/*.sql
 		do
 			#run sql files individually in case of missing semi colons
-			(cat $f | mysqldump --login-path=local -t) > ${f%???}txt
+			(cat $f | mysql -u root -p$PASSWORD -t) > ${f%???}txt
+
+			#concat queries 
+			cat $f  >> ./CH3-queries/${NAMEPATH}_query.txt
+			sed -i '' -e '$a\' ./CH3-queries/${NAMEPATH}_query.sql
+			
 		done
-		cat $studentFolder/*.txt >> ./$NAMEPATH.txt
+		echo $studentFolder
+		cat $studentFolder/*.txt >> ./CH3-Results/${NAMEPATH}_output.txt
 	done
 }
 
+read -s -p "Enter MySQL Password: " PASSWORD
 combine_files
